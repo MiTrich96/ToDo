@@ -61,8 +61,8 @@ function deleteCheck(e) {
         else {
             todos = JSON.parse(localStorage.getItem('todos'));
         }
-        const todoIndex = todo.children[0].innerText - 1;
-
+        const todoIndex = todo.children[0].innerText;
+        let index = todos.indexOf(todoIndex);
         let states;
         if (localStorage.getItem('states') === null) {
             states = [];
@@ -70,8 +70,8 @@ function deleteCheck(e) {
         else {
             states = JSON.parse(localStorage.getItem('states'));
         }
-        if (states[todoIndex] == 'true') states[todoIndex] = 'false';
-        else states[todoIndex] = 'true';
+        if (states[index] == 'true') states[index] = 'false';
+        else states[index] = 'true';
         localStorage.setItem("states", JSON.stringify(states));
 
     }
