@@ -19,6 +19,7 @@ function addTodo(event) {
     newTodo.classList.add('todo-item');
 
     saveLocalTodos(todoInput.value);
+    saveLocalState(false);
 
     todoDiv.appendChild(newTodo);
 
@@ -52,6 +53,27 @@ function deleteCheck(e) {
     if (item.classList[0] === 'complete-btn') {
         const todo = item.parentElement;
         todo.classList.toggle('completed');
+
+        let todos;
+        if (localStorage.getItem('todos') === null) {
+            todos = [];
+        }
+        else {
+            todos = JSON.parse(localStorage.getItem('todos'));
+        }
+        const todoIndex = todo.children[0].innerText - 1;
+
+        let states;
+        if (localStorage.getItem('states') === null) {
+            states = [];
+        }
+        else {
+            states = JSON.parse(localStorage.getItem('states'));
+        }
+        if (states[todoIndex] == 'true') states[todoIndex] = 'false';
+        else states[todoIndex] = 'true';
+        localStorage.setItem("states", JSON.stringify(states));
+
     }
 }
 
@@ -82,6 +104,18 @@ function filterTodo(e) {
     });
 }
 
+function saveLocalState(state) {
+    let states;
+    if (localStorage.getItem('states') === null) {
+        states = [];
+    }
+    else {
+        states = JSON.parse(localStorage.getItem('states'));
+    }
+    states.push(state);
+    localStorage.setItem('states', JSON.stringify(states));
+}
+
 function saveLocalTodos(todo) {
     let todos;
     if (localStorage.getItem('todos') === null) {
@@ -102,6 +136,16 @@ function getTodos() {
     else {
         todos = JSON.parse(localStorage.getItem('todos'));
     }
+
+    let states;
+    if (localStorage.getItem('states') === null) {
+        states = [];
+    }
+    else {
+        states = JSON.parse(localStorage.getItem('states'));
+    }
+
+    let index = 0;
     todos.forEach(todo => {
         const todoDiv = document.createElement('div');
         todoDiv.classList.add('todo');
@@ -122,7 +166,12 @@ function getTodos() {
         trashButton.classList.add('trash-btn');
         todoDiv.appendChild(trashButton);
 
+        if (states[index] === 'true') {
+            todoDiv.classList.toggle('completed');
+        }
+
         todoList.appendChild(todoDiv);
+        index++;
     });
 }
 
@@ -137,4 +186,14 @@ function removeLocalTodos(todo) {
     const todoIndex = todo.children[0].innerText;
     todos.splice(todos.indexOf(todoIndex), 1);
     localStorage.setItem("todos", JSON.stringify(todos));
+    
+    let states;
+    if (localStorage.getItem('states') === null) {
+        states = [];
+    }
+    else {
+        states = JSON.parse(localStorage.getItem('states'));
+    }
+    states.splice(states.indexOf(todoIndex), 1);
+    localStorage.setItem("states", JSON.stringify(states));
 }
